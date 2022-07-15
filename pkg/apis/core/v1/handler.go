@@ -2519,7 +2519,17 @@ func (h *handler) CreateBackupPoint(request *restful.Request, response *restful.
 
 func (h *handler) DeleteBackupPoint(request *restful.Request, response *restful.Response) {
 	name := request.PathParameter(query.ParameterName)
-	err := h.clusterOperator.DeleteBackupPoint(request.Request.Context(), name)
+	q := query.ParseQueryParameter(request)
+	backups, err := h.clusterOperator.ListBackups(request.Request.Context(), q)
+	if err != nil {
+		restplus.HandleInternalError(response, request, err)
+		return
+	}
+	if ok := h.getBackupPoint(backups, name); ok {
+		restplus.HandleInternalError(response, request, errors.New("backup point is in use, please delete backup first"))
+		return
+	}
+	err = h.clusterOperator.DeleteBackupPoint(request.Request.Context(), name)
 	if err != nil {
 		if apimachineryErrors.IsNotFound(err) {
 			logger.Debug("backup point has already not exist when delete", zap.String("backupPoint", name))

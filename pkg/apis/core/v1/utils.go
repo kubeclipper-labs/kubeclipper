@@ -353,3 +353,12 @@ func getActBackupStep(c *v1.Cluster, b *v1.Backup, bp *v1.BackupPoint, action v1
 
 	return actBackup.GetStep(action), nil
 }
+
+func (h *handler) getBackupPoint(backups *v1.BackupList, name string) bool {
+	for _, item := range backups.Items {
+		if item.BackupPointName == name {
+			return true
+		}
+	}
+	return false
+}
