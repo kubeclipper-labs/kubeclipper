@@ -24,11 +24,12 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/kubeclipper/kubeclipper/pkg/query"
+
 	"github.com/google/uuid"
 
 	"github.com/kubeclipper/kubeclipper/pkg/component"
 	"github.com/kubeclipper/kubeclipper/pkg/component/utils"
-	"github.com/kubeclipper/kubeclipper/pkg/query"
 	"github.com/kubeclipper/kubeclipper/pkg/scheme/common"
 	v1 "github.com/kubeclipper/kubeclipper/pkg/scheme/core/v1"
 	"github.com/kubeclipper/kubeclipper/pkg/scheme/core/v1/cri"
@@ -305,15 +306,12 @@ func (h *handler) parseOperationFromComponent(extraMetadata *component.ExtraMeta
 func (h *handler) parseActBackupSteps(c *v1.Cluster, b *v1.Backup, action v1.StepAction) ([]v1.Step, error) {
 	steps := make([]v1.Step, 0)
 
-	q := query.New()
-	q.LabelSelector = fmt.Sprintf("%s=%s", common.LabelClusterName, c.Name)
-
 	bp, err := h.clusterOperator.GetBackupPointEx(context.TODO(), c.Labels[common.LabelBackupPoint], "0")
 	if err != nil {
 		return nil, err
 	}
 
-	actBackupStep, err := getActBackupStep(c, b, bp, action)
+	actBackupStep, err := GetActBackupStep(c, b, bp, action)
 	if err != nil {
 		return nil, err
 	}
@@ -323,7 +321,7 @@ func (h *handler) parseActBackupSteps(c *v1.Cluster, b *v1.Backup, action v1.Ste
 	return steps, nil
 }
 
-func getActBackupStep(c *v1.Cluster, b *v1.Backup, bp *v1.BackupPoint, action v1.StepAction) (steps []v1.Step, err error) {
+func GetActBackupStep(c *v1.Cluster, b *v1.Backup, bp *v1.BackupPoint, action v1.StepAction) (steps []v1.Step, err error) {
 	var actBackup *k8s.ActBackup
 	meta := component.ExtraMetadata{
 		ClusterName: c.Name,

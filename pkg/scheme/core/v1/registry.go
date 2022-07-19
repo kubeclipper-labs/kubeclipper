@@ -76,6 +76,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&DomainList{},
 		&BackupPoint{},
 		&BackupPointList{},
+		&CronBackup{},
+		&CronBackupList{},
 		&Template{},
 		&TemplateList{},
 	)

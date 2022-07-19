@@ -22,6 +22,8 @@ import (
 	"reflect"
 	"sync"
 
+	"github.com/kubeclipper/kubeclipper/pkg/server/registry/cronbackup"
+
 	"github.com/kubeclipper/kubeclipper/pkg/server/registry/template"
 
 	coordinationv1 "k8s.io/api/coordination/v1"
@@ -69,6 +71,7 @@ type SharedStorageFactory interface {
 	Backups() rest.StandardStorage
 	Recoveries() rest.StandardStorage
 	BackupPoints() rest.StandardStorage
+	CronBackups() rest.StandardStorage
 	DNSDomains() rest.StandardStorage
 	Template() rest.StandardStorage
 }
@@ -165,6 +168,10 @@ func (s *sharedStorageFactory) Recoveries() rest.StandardStorage {
 
 func (s *sharedStorageFactory) BackupPoints() rest.StandardStorage {
 	return s.StorageFor(&corev1.BackupPoint{}, backuppoint.NewStorage)
+}
+
+func (s *sharedStorageFactory) CronBackups() rest.StandardStorage {
+	return s.StorageFor(&corev1.CronBackup{}, cronbackup.NewStorage)
 }
 
 func (s *sharedStorageFactory) DNSDomains() rest.StandardStorage {

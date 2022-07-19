@@ -26,6 +26,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/kubeclipper/kubeclipper/pkg/controller/cronbackupcontroller"
+
 	corev1 "github.com/kubeclipper/kubeclipper/pkg/apis/core/v1"
 	"github.com/kubeclipper/kubeclipper/pkg/authentication/mfa"
 	"github.com/kubeclipper/kubeclipper/pkg/controller/tokencontroller"
@@ -242,6 +244,7 @@ func (s *APIServer) installAPIs(stopCh <-chan struct{}) error {
 		s.storageFactory.Backups(),
 		s.storageFactory.Recoveries(),
 		s.storageFactory.BackupPoints(),
+		s.storageFactory.CronBackups(),
 		s.storageFactory.DNSDomains(),
 		s.storageFactory.Template(),
 	)
@@ -431,6 +434,7 @@ func SetupController(mgr manager.Manager, informerFactory informers.SharedInform
 		storageFactory.Backups(),
 		storageFactory.Recoveries(),
 		storageFactory.BackupPoints(),
+		storageFactory.CronBackups(),
 		storageFactory.DNSDomains(),
 		storageFactory.Template(),
 	)
@@ -470,6 +474,20 @@ func SetupController(mgr manager.Manager, informerFactory informers.SharedInform
 		NodeWriter:      clusterOperator,
 		ClusterWriter:   clusterOperator,
 		OperationWriter: opOperator,
+	}).SetupWithManager(mgr, informerFactory); err != nil {
+		return err
+	}
+	if err = (&cronbackupcontroller.CronBackupReconciler{
+		CmdDelivery:       mgr.GetCmdDelivery(),
+		ClusterLister:     informerFactory.Core().V1().Clusters().Lister(),
+		NodeLister:        informerFactory.Core().V1().Nodes().Lister(),
+		BackupLister:      informerFactory.Core().V1().Backups().Lister(),
+		CronBackupLister:  informerFactory.Core().V1().CronBackups().Lister(),
+		BackupPointLister: informerFactory.Core().V1().BackupPoints().Lister(),
+		OperationWriter:   opOperator,
+		ClusterWriter:     clusterOperator,
+		CronBackupWriter:  clusterOperator,
+		BackupWriter:      clusterOperator,
 	}).SetupWithManager(mgr, informerFactory); err != nil {
 		return err
 	}

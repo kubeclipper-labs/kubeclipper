@@ -774,6 +774,120 @@ func SetupWebService(h *handler) *restful.WebService {
 		Returns(http.StatusOK, http.StatusText(http.StatusOK), nil).
 		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), errors.HTTPError{}))
 
+	webservice.Route(webservice.GET("/cronbackups").
+		Doc("List of cronbackup.").
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		To(h.ListCronBackups).
+		Param(webservice.QueryParameter(query.PagingParam, "paging query, e.g. limit=100,page=1").
+			Required(false).
+			DataFormat("limit=%d,page=%d").
+			DefaultValue("limit=10,page=1")).
+		Param(webservice.QueryParameter(query.ParameterLabelSelector, "resource filter by metadata label").
+			Required(false).
+			DataFormat("labelSelector=%s=%s")).
+		Param(webservice.QueryParameter(query.ParameterFieldSelector, "resource filter by field").
+			Required(false).
+			DataFormat("fieldSelector=%s=%s")).
+		Param(webservice.QueryParameter(query.ParamReverse, "resource sort reverse or not").Required(false).
+			DataType("boolean")).
+		Param(webservice.QueryParameter(query.ParameterFuzzySearch, "fuzzy search conditions").
+			DataFormat("foo~bar,bar~baz").
+			Required(false)).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), models.PageableResponse{}).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), errors.HTTPError{}))
+
+	webservice.Route(webservice.GET("/cronbackups/{name}").
+		Doc("Get a cronbackup by name.").
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		Param(webservice.PathParameter(query.ParameterName, "cronbackup name").
+			Required(true).
+			DataType("string")).
+		Param(webservice.QueryParameter(query.ParameterResourceVersion, "resource version to query").
+			Required(false).
+			DataType("string")).
+		To(h.DescribeCronBackup).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), corev1.CronBackup{}).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), errors.HTTPError{}))
+
+	webservice.Route(webservice.POST("/cronbackups").
+		Doc("Create a cronbackup.").
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		To(h.CreateCronBackup).
+		Reads(corev1.CronBackup{}).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), corev1.CronBackup{}).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), errors.HTTPError{}))
+
+	webservice.Route(webservice.PUT("/cronbackups/{name}").
+		To(h.UpdateCronBackup).
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		Doc("Update cronbackup.").
+		Param(webservice.PathParameter(query.ParameterName, "cronbackup name").
+			Required(true).
+			DataType("string")).
+		Param(webservice.QueryParameter(query.ParameterResourceVersion, "resource version to query").
+			Required(false).
+			DataType("string")).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), corev1.CronBackup{}).
+		Returns(http.StatusNotFound, http.StatusText(http.StatusNotFound), nil))
+
+	webservice.Route(webservice.DELETE("/cronbackups/{name}").
+		To(h.DeleteCronBackup).
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		Doc("Delete a cronbackup.").
+		Param(webservice.PathParameter(query.ParameterName, "cronbackup name").
+			Required(true).
+			DataType("string")).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), nil).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), errors.HTTPError{}))
+
+	webservice.Route(webservice.PATCH("/cronbackups/{name}/enable").
+		To(h.EnableCronBackup).
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		Doc("enable a cronbackup.").
+		Param(webservice.PathParameter(query.ParameterName, "cronbackup name").
+			Required(true).
+			DataType("string")).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), nil).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), errors.HTTPError{}))
+
+	webservice.Route(webservice.PATCH("/cronbackups/{name}/disable").
+		To(h.DisableCronBackup).
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		Doc("disable a cronbackup.").
+		Param(webservice.PathParameter(query.ParameterName, "cronbackup name").
+			Required(true).
+			DataType("string")).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), nil).
+		Returns(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), errors.HTTPError{}))
+
+	webservice.Route(webservice.GET("/cronbackups/{name}/backups").
+		To(h.ListBackupsWithCronBackup).
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		Doc("List backups created by cronBackup.").
+		Param(webservice.PathParameter(query.ParameterName, "cronBackup name").
+			Required(true).
+			DataType("string")).
+		Param(webservice.QueryParameter(query.PagingParam, "paging query, e.g. limit=100,page=1").
+			Required(false).
+			DataFormat("limit=%d,page=%d").
+			DefaultValue("limit=10,page=1")).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), models.PageableResponse{}).
+		Returns(http.StatusNotFound, http.StatusText(http.StatusNotFound), nil))
+
+	webservice.Route(webservice.GET("/clusters/{name}/cronbackups").
+		To(h.ListCronBackupsWithCluster).
+		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
+		Doc("List cronBackups of a cluster by name.").
+		Param(webservice.PathParameter("name", "cluster name").
+			Required(true).
+			DataType("string")).
+		Param(webservice.QueryParameter(query.PagingParam, "paging query, e.g. limit=100,page=1").
+			Required(false).
+			DataFormat("limit=%d,page=%d").
+			DefaultValue("limit=10,page=1")).
+		Returns(http.StatusOK, http.StatusText(http.StatusOK), models.PageableResponse{}).
+		Returns(http.StatusNotFound, http.StatusText(http.StatusNotFound), nil))
+
 	return webservice
 }
 
