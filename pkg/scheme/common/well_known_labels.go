@@ -41,7 +41,7 @@ const (
 	LabelUpgradeVersion    = "kubeclipper.io/upgrade-version"
 	LabelBackupPoint       = "kubeclipper.io/backupPoint"
 	LabelCronBackupDisable = "kubeclipper.io/cronBackupDisable"
-	LabelCronBackupCreated = "kubeclipper.io/cronBackupCreated"
+	LabelCronBackupEnable  = "kubeclipper.io/cronBackupEnable"
 )
 
 const (

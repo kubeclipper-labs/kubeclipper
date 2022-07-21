@@ -20,8 +20,8 @@ type CronBackup struct {
 
 // CronBackupSpec defines the desired state of CronBackup
 type CronBackupSpec struct {
-	// the cronBackup used backup point
-	BackupPointName string `json:"backupPointName,omitempty"`
+	// the cluster to which the cronBackup belongs
+	ClusterName string `json:"clusterName,omitempty"`
 	// the schedule in cron format
 	Schedule string `json:"schedule,omitempty"`
 	// maximum number of reserved backups

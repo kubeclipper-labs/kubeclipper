@@ -874,20 +874,6 @@ func SetupWebService(h *handler) *restful.WebService {
 		Returns(http.StatusOK, http.StatusText(http.StatusOK), models.PageableResponse{}).
 		Returns(http.StatusNotFound, http.StatusText(http.StatusNotFound), nil))
 
-	webservice.Route(webservice.GET("/clusters/{name}/cronbackups").
-		To(h.ListCronBackupsWithCluster).
-		Metadata(restfulspec.KeyOpenAPITags, []string{CoreClusterTag}).
-		Doc("List cronBackups of a cluster by name.").
-		Param(webservice.PathParameter("name", "cluster name").
-			Required(true).
-			DataType("string")).
-		Param(webservice.QueryParameter(query.PagingParam, "paging query, e.g. limit=100,page=1").
-			Required(false).
-			DataFormat("limit=%d,page=%d").
-			DefaultValue("limit=10,page=1")).
-		Returns(http.StatusOK, http.StatusText(http.StatusOK), models.PageableResponse{}).
-		Returns(http.StatusNotFound, http.StatusText(http.StatusNotFound), nil))
-
 	return webservice
 }
 

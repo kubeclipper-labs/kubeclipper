@@ -2605,7 +2605,6 @@ func (h *handler) CreateCronBackup(request *restful.Request, response *restful.R
 		return
 	}
 	if cb.Spec.Schedule != "" {
-
 		s, _ := cron.NewParser(4 | 8 | 16 | 32 | 64).Parse(cb.Spec.Schedule)
 		// update the next schedule time
 		nextRunAt := metav1.NewTime(s.Next(time.Now()))
@@ -2613,19 +2612,8 @@ func (h *handler) CreateCronBackup(request *restful.Request, response *restful.R
 	} else if cb.Spec.RunAt != nil {
 		cb.Status.NextScheduleTime = cb.Spec.RunAt
 	}
-	clu, err := h.clusterOperator.GetCluster(request.Request.Context(), cb.Labels[common.LabelClusterName])
-	if err != nil {
-		restplus.HandleInternalError(response, request, err)
-		return
-	}
-	// get the cluster current backup point
-	backupPoint, err := h.clusterOperator.GetBackupPoint(request.Request.Context(), clu.Labels[common.LabelBackupPoint], "0")
-	if err != nil {
-		restplus.HandleInternalError(response, request, err)
-		return
-	}
-	cb.Spec.BackupPointName = backupPoint.Name
-	cb.Labels[common.LabelCronBackupDisable] = "false"
+
+	cb.Labels[common.LabelCronBackupEnable] = "true"
 	createdCB, err := h.clusterOperator.CreateCronBackup(request.Request.Context(), cb)
 	if err != nil {
 		if apimachineryErrors.IsAlreadyExists(err) {
@@ -2697,11 +2685,12 @@ func (h *handler) EnableCronBackup(req *restful.Request, resp *restful.Response)
 		restplus.HandleInternalError(resp, req, err)
 		return
 	}
-	err = h.syncCronBackupDisable(cronBackup, "false")
-	if err != nil {
-		restplus.HandleBadRequest(resp, req, err)
-		return
+
+	if _, enable := cronBackup.Labels[common.LabelCronBackupEnable]; enable {
+		restplus.HandleBadRequest(resp, req, fmt.Errorf("the cronbackup %s is already enable:%v", cronBackup.Name, cronBackup.Labels[common.LabelCronBackupEnable]))
 	}
+	delete(cronBackup.Labels, common.LabelCronBackupDisable)
+	cronBackup.Labels[common.LabelCronBackupEnable] = "true"
 	updateCronBackup, err := h.clusterOperator.UpdateCronBackup(ctx, cronBackup)
 	if err != nil {
 		if apimachineryErrors.IsConflict(err) {
@@ -2727,11 +2716,12 @@ func (h *handler) DisableCronBackup(req *restful.Request, resp *restful.Response
 		restplus.HandleInternalError(resp, req, err)
 		return
 	}
-	err = h.syncCronBackupDisable(cronBackup, "true")
-	if err != nil {
-		restplus.HandleBadRequest(resp, req, err)
-		return
+
+	if _, disable := cronBackup.Labels[common.LabelCronBackupDisable]; disable {
+		restplus.HandleBadRequest(resp, req, fmt.Errorf("the cronbackup %s is already disable:%v", cronBackup.Name, cronBackup.Labels[common.LabelCronBackupDisable]))
 	}
+	delete(cronBackup.Labels, common.LabelCronBackupEnable)
+	cronBackup.Labels[common.LabelCronBackupDisable] = "true"
 	updateCronBackup, err := h.clusterOperator.UpdateCronBackup(ctx, cronBackup)
 	if err != nil {
 		if apimachineryErrors.IsConflict(err) {
@@ -2744,20 +2734,8 @@ func (h *handler) DisableCronBackup(req *restful.Request, resp *restful.Response
 	_ = resp.WriteHeaderAndEntity(http.StatusOK, updateCronBackup)
 }
 
-func (h *handler) syncCronBackupDisable(cronBackup *v1.CronBackup, reqDisable string) error {
-	if reqDisable == cronBackup.Labels[common.LabelCronBackupDisable] {
-		return fmt.Errorf("the cronbackup %s is already disable:%v", cronBackup.Name, cronBackup.Labels[common.LabelCronBackupDisable])
-	}
-	// update cronBackup label
-	if reqDisable == "true" {
-		cronBackup.Labels[common.LabelCronBackupDisable] = "true"
-	} else {
-		cronBackup.Labels[common.LabelCronBackupDisable] = "false"
-	}
-	return nil
-}
-
 func (h *handler) ListBackupsWithCronBackup(req *restful.Request, resp *restful.Response) {
+	var result []v1.Backup
 	// cronBackup name in path
 	cronBackupName := req.PathParameter(query.ParameterName)
 	ctx := req.Request.Context()
@@ -2771,27 +2749,19 @@ func (h *handler) ListBackupsWithCronBackup(req *restful.Request, resp *restful.
 		return
 	}
 	q := query.ParseQueryParameter(req)
-	labels := []string{fmt.Sprintf("%s=%s", common.LabelCronBackupCreated, cronBackup.Name)}
-	q.LabelSelector = strings.Join(labels, ",")
-	result, err := h.clusterOperator.ListBackupEx(ctx, q)
-	if err != nil {
-		restplus.HandleInternalError(resp, req, err)
-		return
-	}
-	_ = resp.WriteHeaderAndEntity(http.StatusOK, result)
-}
 
-func (h *handler) ListCronBackupsWithCluster(req *restful.Request, resp *restful.Response) {
-	// cronBackup name in path
-	clusterName := req.PathParameter(query.ParameterName)
-	ctx := req.Request.Context()
-	q := query.ParseQueryParameter(req)
-	labels := []string{fmt.Sprintf("%s=%s", common.LabelClusterName, clusterName)}
-	q.LabelSelector = strings.Join(labels, ",")
-	result, err := h.clusterOperator.ListCronBackupEx(ctx, q)
+	backupList, err := h.clusterOperator.ListBackups(ctx, q)
 	if err != nil {
 		restplus.HandleInternalError(resp, req, err)
 		return
 	}
+	for _, b := range backupList.Items {
+		if len(b.GetOwnerReferences()) != 0 {
+			if b.GetOwnerReferences()[0].UID == cronBackup.UID {
+				result = append(result, b)
+			}
+		}
+	}
+
 	_ = resp.WriteHeaderAndEntity(http.StatusOK, result)
 }

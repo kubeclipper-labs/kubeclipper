@@ -354,7 +354,7 @@ var roles = []iamv1.GlobalRole{
 			{
 				APIGroups: []string{"core.kubeclipper.io"},
 				Resources: []string{"cronbackups"},
-				Verbs:     []string{"get", "list", "watch", "create"},
+				Verbs:     []string{"update", "patch"},
 			},
 		},
 	},
@@ -395,7 +395,7 @@ var roles = []iamv1.GlobalRole{
 			{
 				APIGroups: []string{"core.kubeclipper.io"},
 				Resources: []string{"cronbackups"},
-				Verbs:     []string{"get", "list", "watch", "create"},
+				Verbs:     []string{"delete"},
 			},
 		},
 	},
