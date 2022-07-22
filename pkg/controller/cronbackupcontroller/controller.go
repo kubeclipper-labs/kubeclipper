@@ -83,7 +83,7 @@ func (r *CronBackupReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 			return ctrl.Result{}, cErr
 		}
 
-		if _, disable := cronBackup.Labels[common.LabelCronBackupDisable]; disable {
+		if _, ok := cronBackup.Labels[common.LabelCronBackupDisable]; ok {
 			continue
 		}
 
@@ -209,6 +209,7 @@ func (r *CronBackupReconciler) createBackup(log logger.Logging, cronBackup *v1.C
 
 	if c.Status.Status != v1.ClusterStatusRunning {
 		log.Warnf("the cluster is %v, create backup in next reconcile", c.Status.Status)
+		return nil
 	}
 
 	randNum := rand.String(5)

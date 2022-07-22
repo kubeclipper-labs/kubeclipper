@@ -306,12 +306,19 @@ func (h *handler) parseOperationFromComponent(extraMetadata *component.ExtraMeta
 func (h *handler) parseActBackupSteps(c *v1.Cluster, b *v1.Backup, action v1.StepAction) ([]v1.Step, error) {
 	steps := make([]v1.Step, 0)
 
+	q := query.New()
+	q.LabelSelector = fmt.Sprintf("%s=%s", common.LabelClusterName, c.Name)
+
 	bp, err := h.clusterOperator.GetBackupPointEx(context.TODO(), c.Labels[common.LabelBackupPoint], "0")
 	if err != nil {
 		return nil, err
 	}
-
-	actBackupStep, err := GetActBackupStep(c, b, bp, action)
+	// obtain the preferred node information
+	pNode, err := h.clusterOperator.GetNodeEx(context.TODO(), b.PreferredNode, "0")
+	if err != nil {
+		return nil, err
+	}
+	actBackupStep, err := getActBackupStep(c, b, bp, pNode, action)
 	if err != nil {
 		return nil, err
 	}
@@ -321,12 +328,16 @@ func (h *handler) parseActBackupSteps(c *v1.Cluster, b *v1.Backup, action v1.Ste
 	return steps, nil
 }
 
-func GetActBackupStep(c *v1.Cluster, b *v1.Backup, bp *v1.BackupPoint, action v1.StepAction) (steps []v1.Step, err error) {
+func getActBackupStep(c *v1.Cluster, b *v1.Backup, bp *v1.BackupPoint, pNode *v1.Node, action v1.StepAction) (steps []v1.Step, err error) {
 	var actBackup *k8s.ActBackup
 	meta := component.ExtraMetadata{
 		ClusterName: c.Name,
 	}
-	meta.Masters = append(meta.Masters, component.Node{ID: b.PreferredNode})
+	meta.Masters = []component.Node{{
+		ID:       b.PreferredNode, // the preferred node is used by default
+		IPv4:     pNode.Status.Ipv4DefaultIP,
+		Hostname: pNode.Status.NodeInfo.Hostname,
+	}}
 	ctx := component.WithExtraMetadata(context.TODO(), meta)
 
 	switch bp.StorageType {

@@ -2613,7 +2613,7 @@ func (h *handler) CreateCronBackup(request *restful.Request, response *restful.R
 		cb.Status.NextScheduleTime = cb.Spec.RunAt
 	}
 
-	cb.Labels[common.LabelCronBackupEnable] = "true"
+	cb.Labels[common.LabelCronBackupEnable] = ""
 	createdCB, err := h.clusterOperator.CreateCronBackup(request.Request.Context(), cb)
 	if err != nil {
 		if apimachineryErrors.IsAlreadyExists(err) {
@@ -2686,11 +2686,11 @@ func (h *handler) EnableCronBackup(req *restful.Request, resp *restful.Response)
 		return
 	}
 
-	if _, enable := cronBackup.Labels[common.LabelCronBackupEnable]; enable {
+	if _, ok := cronBackup.Labels[common.LabelCronBackupEnable]; ok {
 		restplus.HandleBadRequest(resp, req, fmt.Errorf("the cronbackup %s is already enable:%v", cronBackup.Name, cronBackup.Labels[common.LabelCronBackupEnable]))
 	}
 	delete(cronBackup.Labels, common.LabelCronBackupDisable)
-	cronBackup.Labels[common.LabelCronBackupEnable] = "true"
+	cronBackup.Labels[common.LabelCronBackupEnable] = ""
 	updateCronBackup, err := h.clusterOperator.UpdateCronBackup(ctx, cronBackup)
 	if err != nil {
 		if apimachineryErrors.IsConflict(err) {
@@ -2717,11 +2717,11 @@ func (h *handler) DisableCronBackup(req *restful.Request, resp *restful.Response
 		return
 	}
 
-	if _, disable := cronBackup.Labels[common.LabelCronBackupDisable]; disable {
+	if _, ok := cronBackup.Labels[common.LabelCronBackupDisable]; ok {
 		restplus.HandleBadRequest(resp, req, fmt.Errorf("the cronbackup %s is already disable:%v", cronBackup.Name, cronBackup.Labels[common.LabelCronBackupDisable]))
 	}
 	delete(cronBackup.Labels, common.LabelCronBackupEnable)
-	cronBackup.Labels[common.LabelCronBackupDisable] = "true"
+	cronBackup.Labels[common.LabelCronBackupDisable] = ""
 	updateCronBackup, err := h.clusterOperator.UpdateCronBackup(ctx, cronBackup)
 	if err != nil {
 		if apimachineryErrors.IsConflict(err) {
