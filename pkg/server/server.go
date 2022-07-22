@@ -22,9 +22,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
 
 	corev1 "github.com/kubeclipper/kubeclipper/pkg/apis/core/v1"
 	"github.com/kubeclipper/kubeclipper/pkg/authentication/mfa"
@@ -315,26 +313,8 @@ func (s *APIServer) migrateRole(operator iam.Operator) error {
 		return nil
 	}
 
-	roleFile := "role.json"
-	path := fmt.Sprintf("%s/%s", config.DefaultConfigurationPath, roleFile)
-	if !fileExist(path) {
-		if fileExist(roleFile) {
-			path = roleFile
-		} else {
-			return nil
-		}
-	}
-
-	bData, err := ioutil.ReadFile(path)
-	if err != nil {
-		return err
-	}
-	var roles []v1.GlobalRole
-	if err := json.Unmarshal(bData, &roles); err != nil {
-		return err
-	}
-	for index := range roles {
-		if _, err := operator.CreateRole(context.TODO(), &roles[index]); err != nil {
+	for index := range Roles {
+		if _, err := operator.CreateRole(context.TODO(), &Roles[index]); err != nil {
 			return err
 		}
 	}
@@ -350,26 +330,8 @@ func (s *APIServer) migrateRoleBinding(operator iam.Operator) error {
 		return nil
 	}
 
-	roleFile := "rolebinding.json"
-	path := fmt.Sprintf("%s/%s", config.DefaultConfigurationPath, roleFile)
-	if !fileExist(path) {
-		if fileExist(roleFile) {
-			path = roleFile
-		} else {
-			return nil
-		}
-	}
-
-	bData, err := ioutil.ReadFile(path)
-	if err != nil {
-		return err
-	}
-	var roles []v1.GlobalRoleBinding
-	if err := json.Unmarshal(bData, &roles); err != nil {
-		return err
-	}
-	for index := range roles {
-		if _, err := operator.CreateRoleBinding(context.TODO(), &roles[index]); err != nil {
+	for index := range RoleBindings {
+		if _, err := operator.CreateRoleBinding(context.TODO(), &RoleBindings[index]); err != nil {
 			return err
 		}
 	}
@@ -385,42 +347,19 @@ func (s *APIServer) migrateUser(operator iam.Operator) error {
 		return nil
 	}
 
-	userFile := "user.json"
-	path := fmt.Sprintf("%s/%s", config.DefaultConfigurationPath, userFile)
-	if !fileExist(path) {
-		if fileExist(userFile) {
-			path = userFile
-		} else {
-			return nil
-		}
-	}
-
-	bData, err := ioutil.ReadFile(path)
-	if err != nil {
-		return err
-	}
-	var users []v1.User
-	if err := json.Unmarshal(bData, &users); err != nil {
-		return err
-	}
-	for index := range users {
-		encPass, err := hashutil.EncryptPassword(users[index].Spec.EncryptedPassword)
+	for index := range Users {
+		encPass, err := hashutil.EncryptPassword(Users[index].Spec.EncryptedPassword)
 		if err != nil {
 			return err
 		}
-		users[index].Spec.EncryptedPassword = encPass
+		Users[index].Spec.EncryptedPassword = encPass
 		state := v1.UserActive
-		users[index].Status.State = &state
-		if _, err := operator.CreateUser(context.TODO(), &users[index]); err != nil {
+		Users[index].Status.State = &state
+		if _, err := operator.CreateUser(context.TODO(), &Users[index]); err != nil {
 			return err
 		}
 	}
 	return nil
-}
-
-func fileExist(file string) bool {
-	_, err := os.Stat(file)
-	return err == nil
 }
 
 func SetupController(mgr manager.Manager, informerFactory informers.SharedInformerFactory, storageFactory registry.SharedStorageFactory) error {

@@ -1,34 +1,12 @@
-/*
- *
- *  * Copyright 2021 KubeClipper Authors.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *     http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *
- */
-
-package main
+package server
 
 import (
-	"encoding/json"
-	"io/ioutil"
-
 	iamv1 "github.com/kubeclipper/kubeclipper/pkg/scheme/iam/v1"
-
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var roles = []iamv1.GlobalRole{
+var Roles = []iamv1.GlobalRole{
 	{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       iamv1.KindGlobalRole,
@@ -243,6 +221,134 @@ var roles = []iamv1.GlobalRole{
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: map[string]string{
+				"kubeclipper.io/dependencies":        "[\"role-template-view-clusters\"]",
+				"kubeclipper.io/module":              "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"clusters\": \"access\"}",
+				"kubeclipper.io/alias-name":          "Cluster Access",
+				"kubeclipper.io/internal":            "true",
+			},
+			Labels: map[string]string{
+				"kubeclipper.io/role-template": "true",
+			},
+			Name: "role-template-access-clusters",
+		},
+		Rules: []rbacv1.PolicyRule{
+			{
+				APIGroups: []string{"core.kubeclipper.io"},
+				Resources: []string{"clusters/terminal"},
+				Verbs:     []string{"get"},
+			},
+		},
+	},
+	{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       iamv1.KindGlobalRole,
+			APIVersion: iamv1.SchemeGroupVersion.String(),
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Annotations: map[string]string{
+				"kubeclipper.io/module":              "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"backuppoints\": \"view\"}",
+				"kubeclipper.io/alias-name":          "BackupPoint View",
+				"kubeclipper.io/internal":            "true",
+			},
+			Labels: map[string]string{
+				"kubeclipper.io/role-template": "true",
+			},
+			Name: "role-template-view-backuppoints",
+		},
+		Rules: []rbacv1.PolicyRule{
+			{
+				APIGroups: []string{"core.kubeclipper.io"},
+				Resources: []string{"backuppoints"},
+				Verbs:     []string{"get", "list", "watch"},
+			},
+		},
+	},
+	{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       iamv1.KindGlobalRole,
+			APIVersion: iamv1.SchemeGroupVersion.String(),
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Annotations: map[string]string{
+				"kubeclipper.io/dependencies":        "[\"role-template-view-backuppoints\"]",
+				"kubeclipper.io/module":              "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"backuppoints\": \"edit\"}",
+				"kubeclipper.io/alias-name":          "BackupPoint Edit",
+				"kubeclipper.io/internal":            "true",
+			},
+			Labels: map[string]string{
+				"kubeclipper.io/role-template": "true",
+			},
+			Name: "role-template-edit-backuppoints",
+		},
+		Rules: []rbacv1.PolicyRule{
+			{
+				APIGroups: []string{"core.kubeclipper.io"},
+				Resources: []string{"backuppoints"},
+				Verbs:     []string{"create", "delete", "update", "patch"},
+			},
+		},
+	},
+	{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       iamv1.KindGlobalRole,
+			APIVersion: iamv1.SchemeGroupVersion.String(),
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Annotations: map[string]string{
+				"kubeclipper.io/module":              "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"registries\": \"view\"}",
+				"kubeclipper.io/alias-name":          "Registry View",
+				"kubeclipper.io/internal":            "true",
+			},
+			Labels: map[string]string{
+				"kubeclipper.io/role-template": "true",
+			},
+			Name: "role-template-view-registries",
+		},
+		Rules: []rbacv1.PolicyRule{
+			{
+				APIGroups: []string{"config.kubeclipper.io"}, // TODO change to core group
+				Resources: []string{"template"},
+				Verbs:     []string{"get", "list", "watch"},
+			},
+		},
+	},
+	{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       iamv1.KindGlobalRole,
+			APIVersion: iamv1.SchemeGroupVersion.String(),
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Annotations: map[string]string{
+				"kubeclipper.io/dependencies":        "[\"role-template-view-registries\"]",
+				"kubeclipper.io/module":              "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"registries\": \"edit\"}",
+				"kubeclipper.io/alias-name":          "Registry Edit",
+				"kubeclipper.io/internal":            "true",
+			},
+			Labels: map[string]string{
+				"kubeclipper.io/role-template": "true",
+			},
+			Name: "role-template-edit-registries",
+		},
+		Rules: []rbacv1.PolicyRule{
+			{
+				APIGroups: []string{"config.kubeclipper.io"},
+				Resources: []string{"template"},
+				Verbs:     []string{"update", "patch"},
+			},
+		},
+	},
+	{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       iamv1.KindGlobalRole,
+			APIVersion: iamv1.SchemeGroupVersion.String(),
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Annotations: map[string]string{
 				"kubeclipper.io/module":              "Cluster Management",
 				"kubeclipper.io/role-template-rules": "{\"clusters\": \"view\"}",
 				"kubeclipper.io/alias-name":          "Cluster View",
@@ -273,7 +379,7 @@ var roles = []iamv1.GlobalRole{
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: map[string]string{
-				"kubeclipper.io/dependencies":        "[\"role-template-view-clusters\"]",
+				"kubeclipper.io/dependencies":        "[\"role-template-view-clusters\",\"role-template-view-backuppoints\",\"role-template-view-registries\"]",
 				"kubeclipper.io/module":              "Cluster Management",
 				"kubeclipper.io/role-template-rules": "{\"clusters\": \"create\"}",
 				"kubeclipper.io/alias-name":          "Cluster Create",
@@ -298,7 +404,7 @@ var roles = []iamv1.GlobalRole{
 			{
 				APIGroups: []string{"core.kubeclipper.io"},
 				Resources: []string{"templates"},
-				Verbs:     []string{"get", "list", "watch", "create"},
+				Verbs:     []string{"get", "list", "watch"},
 			},
 		},
 	},
@@ -309,7 +415,7 @@ var roles = []iamv1.GlobalRole{
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: map[string]string{
-				"kubeclipper.io/dependencies":        "[\"role-template-view-clusters\"]",
+				"kubeclipper.io/dependencies":        "[\"role-template-view-clusters\",\"role-template-view-backuppoints\",\"role-template-view-registries\"]",
 				"kubeclipper.io/module":              "Cluster Management",
 				"kubeclipper.io/role-template-rules": "{\"clusters\": \"edit\"}",
 				"kubeclipper.io/alias-name":          "Cluster Edit",
@@ -323,7 +429,7 @@ var roles = []iamv1.GlobalRole{
 		Rules: []rbacv1.PolicyRule{
 			{
 				APIGroups: []string{"core.kubeclipper.io"},
-				Resources: []string{"clusters", "clusters/plugins", "clusters/nodes", "clusters/status", "nodes/disable", "nodes/enable"},
+				Resources: []string{"clusters", "clusters/status", "regions", "nodes/disable", "nodes/enable"},
 				Verbs:     []string{"update", "patch"},
 			},
 			{
@@ -333,8 +439,8 @@ var roles = []iamv1.GlobalRole{
 			},
 			{
 				APIGroups: []string{"core.kubeclipper.io"},
-				Resources: []string{"clusters/terminal"},
-				Verbs:     []string{"get"},
+				Resources: []string{"templates"},
+				Verbs:     []string{"*"},
 			},
 		},
 	},
@@ -570,7 +676,7 @@ var roles = []iamv1.GlobalRole{
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: map[string]string{
-				"kubeclipper.io/aggregation-roles": "[\"role-template-create-clusters\",\"role-template-edit-clusters\",\"role-template-delete-clusters\",\"role-template-view-clusters\",\"role-template-view-roles\",\"role-template-create-roles\",\"role-template-edit-roles\",\"role-template-delete-roles\",\"role-template-create-users\",\"role-template-edit-users\",\"role-template-delete-users\",\"role-template-view-users\",\"role-template-view-platform\",\"role-template-edit-platform\",\"role-template-view-audit\",\"role-template-create-dns\",\"role-template-edit-dns\",\"role-template-delete-dns\",\"role-template-view-dns\"]",
+				"kubeclipper.io/aggregation-roles": "[\"role-template-access-clusters\",\"role-template-view-backuppoints\",\"role-template-edit-backuppoints\",\"role-template-view-registries\",\"role-template-edit-registries\",\"role-template-create-clusters\",\"role-template-edit-clusters\",\"role-template-delete-clusters\",\"role-template-view-clusters\",\"role-template-view-roles\",\"role-template-create-roles\",\"role-template-edit-roles\",\"role-template-delete-roles\",\"role-template-create-users\",\"role-template-edit-users\",\"role-template-delete-users\",\"role-template-view-users\",\"role-template-view-platform\",\"role-template-edit-platform\",\"role-template-view-audit\",\"role-template-create-dns\",\"role-template-edit-dns\",\"role-template-delete-dns\",\"role-template-view-dns\"]",
 				"kubeclipper.io/internal":          "true",
 			},
 			Name: "platform-admin",
@@ -594,7 +700,7 @@ var roles = []iamv1.GlobalRole{
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: map[string]string{
-				"kubeclipper.io/aggregation-roles": "[\"role-template-view-clusters\",\"role-template-view-roles\",\"role-template-view-users\",\"role-template-view-platform\",\"role-template-view-audit\",\"role-template-view-dns\"]",
+				"kubeclipper.io/aggregation-roles": "[\"role-template-view-backuppoints\",\"role-template-view-registries\",\"role-template-view-clusters\",\"role-template-view-roles\",\"role-template-view-users\",\"role-template-view-platform\",\"role-template-view-audit\",\"role-template-view-dns\"]",
 				"kubeclipper.io/internal":          "true",
 			},
 			Name: "platform-view",
@@ -707,7 +813,7 @@ var roles = []iamv1.GlobalRole{
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: map[string]string{
-				"kubeclipper.io/aggregation-roles": "[\"role-template-create-clusters\",\"role-template-edit-clusters\",\"role-template-delete-clusters\",\"role-template-view-clusters\"]",
+				"kubeclipper.io/aggregation-roles": "[\"role-template-access-clusters\",\"role-template-view-backuppoints\",\"role-template-edit-backuppoints\",\"role-template-view-registries\",\"role-template-edit-registries\",\"role-template-create-clusters\",\"role-template-edit-clusters\",\"role-template-delete-clusters\",\"role-template-view-clusters\"]",
 				"kubeclipper.io/internal":          "true",
 			},
 			Name: "cluster-manager",
@@ -727,7 +833,7 @@ var roles = []iamv1.GlobalRole{
 	},
 }
 
-var rolebindins = []iamv1.GlobalRoleBinding{
+var RoleBindings = []iamv1.GlobalRoleBinding{
 	{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "GlobalRoleBinding",
@@ -807,7 +913,7 @@ var rolebindins = []iamv1.GlobalRoleBinding{
 	},
 }
 
-var users = []iamv1.User{
+var Users = []iamv1.User{
 	{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "User",
@@ -829,28 +935,4 @@ var users = []iamv1.User{
 			EncryptedPassword: "Thinkbig1",
 		},
 	},
-}
-
-func main() {
-	rByte, err := json.MarshalIndent(roles, "", "\t")
-	if err != nil {
-		panic(err)
-	}
-	if err := ioutil.WriteFile("role.json", rByte, 0644); err != nil {
-		panic(err)
-	}
-	rByte, err = json.MarshalIndent(rolebindins, "", "\t")
-	if err != nil {
-		panic(err)
-	}
-	if err := ioutil.WriteFile("rolebinding.json", rByte, 0644); err != nil {
-		panic(err)
-	}
-	rByte, err = json.MarshalIndent(users, "", "\t")
-	if err != nil {
-		panic(err)
-	}
-	if err := ioutil.WriteFile("user.json", rByte, 0644); err != nil {
-		panic(err)
-	}
 }

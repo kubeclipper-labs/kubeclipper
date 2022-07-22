@@ -260,6 +260,167 @@
 		"kind": "GlobalRole",
 		"apiVersion": "iam.kubeclipper.io/v1",
 		"metadata": {
+			"name": "role-template-access-clusters",
+			"creationTimestamp": null,
+			"labels": {
+				"kubeclipper.io/role-template": "true"
+			},
+			"annotations": {
+				"kubeclipper.io/alias-name": "Cluster Access",
+				"kubeclipper.io/dependencies": "[\"role-template-view-clusters\"]",
+				"kubeclipper.io/internal": "true",
+				"kubeclipper.io/module": "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"clusters\": \"access\"}"
+			}
+		},
+		"rules": [
+			{
+				"verbs": [
+					"get"
+				],
+				"apiGroups": [
+					"core.kubeclipper.io"
+				],
+				"resources": [
+					"clusters/terminal"
+				]
+			}
+		]
+	},
+	{
+		"kind": "GlobalRole",
+		"apiVersion": "iam.kubeclipper.io/v1",
+		"metadata": {
+			"name": "role-template-view-backuppoints",
+			"creationTimestamp": null,
+			"labels": {
+				"kubeclipper.io/role-template": "true"
+			},
+			"annotations": {
+				"kubeclipper.io/alias-name": "BackupPoint View",
+				"kubeclipper.io/internal": "true",
+				"kubeclipper.io/module": "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"backuppoints\": \"view\"}"
+			}
+		},
+		"rules": [
+			{
+				"verbs": [
+					"get",
+					"list",
+					"watch"
+				],
+				"apiGroups": [
+					"core.kubeclipper.io"
+				],
+				"resources": [
+					"backuppoints"
+				]
+			}
+		]
+	},
+	{
+		"kind": "GlobalRole",
+		"apiVersion": "iam.kubeclipper.io/v1",
+		"metadata": {
+			"name": "role-template-edit-backuppoints",
+			"creationTimestamp": null,
+			"labels": {
+				"kubeclipper.io/role-template": "true"
+			},
+			"annotations": {
+				"kubeclipper.io/alias-name": "BackupPoint Edit",
+				"kubeclipper.io/dependencies": "[\"role-template-view-backuppoints\"]",
+				"kubeclipper.io/internal": "true",
+				"kubeclipper.io/module": "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"backuppoints\": \"edit\"}"
+			}
+		},
+		"rules": [
+			{
+				"verbs": [
+					"create",
+					"delete",
+					"update",
+					"patch"
+				],
+				"apiGroups": [
+					"core.kubeclipper.io"
+				],
+				"resources": [
+					"backuppoints"
+				]
+			}
+		]
+	},
+	{
+		"kind": "GlobalRole",
+		"apiVersion": "iam.kubeclipper.io/v1",
+		"metadata": {
+			"name": "role-template-view-registries",
+			"creationTimestamp": null,
+			"labels": {
+				"kubeclipper.io/role-template": "true"
+			},
+			"annotations": {
+				"kubeclipper.io/alias-name": "Registry View",
+				"kubeclipper.io/internal": "true",
+				"kubeclipper.io/module": "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"registries\": \"view\"}"
+			}
+		},
+		"rules": [
+			{
+				"verbs": [
+					"get",
+					"list",
+					"watch"
+				],
+				"apiGroups": [
+					"config.kubeclipper.io"
+				],
+				"resources": [
+					"template"
+				]
+			}
+		]
+	},
+	{
+		"kind": "GlobalRole",
+		"apiVersion": "iam.kubeclipper.io/v1",
+		"metadata": {
+			"name": "role-template-edit-registries",
+			"creationTimestamp": null,
+			"labels": {
+				"kubeclipper.io/role-template": "true"
+			},
+			"annotations": {
+				"kubeclipper.io/alias-name": "Registry Edit",
+				"kubeclipper.io/dependencies": "[\"role-template-view-registries\"]",
+				"kubeclipper.io/internal": "true",
+				"kubeclipper.io/module": "Cluster Management",
+				"kubeclipper.io/role-template-rules": "{\"registries\": \"edit\"}"
+			}
+		},
+		"rules": [
+			{
+				"verbs": [
+					"update",
+					"patch"
+				],
+				"apiGroups": [
+					"config.kubeclipper.io"
+				],
+				"resources": [
+					"template"
+				]
+			}
+		]
+	},
+	{
+		"kind": "GlobalRole",
+		"apiVersion": "iam.kubeclipper.io/v1",
+		"metadata": {
 			"name": "role-template-view-clusters",
 			"creationTimestamp": null,
 			"labels": {
@@ -318,7 +479,7 @@
 			},
 			"annotations": {
 				"kubeclipper.io/alias-name": "Cluster Create",
-				"kubeclipper.io/dependencies": "[\"role-template-view-clusters\"]",
+				"kubeclipper.io/dependencies": "[\"role-template-view-clusters\",\"role-template-view-backuppoints\",\"role-template-view-registries\"]",
 				"kubeclipper.io/internal": "true",
 				"kubeclipper.io/module": "Cluster Management",
 				"kubeclipper.io/role-template-rules": "{\"clusters\": \"create\"}"
@@ -358,8 +519,7 @@
 				"verbs": [
 					"get",
 					"list",
-					"watch",
-					"create"
+					"watch"
 				],
 				"apiGroups": [
 					"core.kubeclipper.io"
@@ -381,7 +541,7 @@
 			},
 			"annotations": {
 				"kubeclipper.io/alias-name": "Cluster Edit",
-				"kubeclipper.io/dependencies": "[\"role-template-view-clusters\"]",
+				"kubeclipper.io/dependencies": "[\"role-template-view-clusters\",\"role-template-view-backuppoints\",\"role-template-view-registries\"]",
 				"kubeclipper.io/internal": "true",
 				"kubeclipper.io/module": "Cluster Management",
 				"kubeclipper.io/role-template-rules": "{\"clusters\": \"edit\"}"
@@ -398,9 +558,8 @@
 				],
 				"resources": [
 					"clusters",
-					"clusters/plugins",
-					"clusters/nodes",
 					"clusters/status",
+					"regions",
 					"nodes/disable",
 					"nodes/enable"
 				]
@@ -419,13 +578,13 @@
 			},
 			{
 				"verbs": [
-					"get"
+					"*"
 				],
 				"apiGroups": [
 					"core.kubeclipper.io"
 				],
 				"resources": [
-					"clusters/terminal"
+					"templates"
 				]
 			}
 		]
@@ -749,7 +908,7 @@
 			"name": "platform-admin",
 			"creationTimestamp": null,
 			"annotations": {
-				"kubeclipper.io/aggregation-roles": "[\"role-template-create-clusters\",\"role-template-edit-clusters\",\"role-template-delete-clusters\",\"role-template-view-clusters\",\"role-template-view-roles\",\"role-template-create-roles\",\"role-template-edit-roles\",\"role-template-delete-roles\",\"role-template-create-users\",\"role-template-edit-users\",\"role-template-delete-users\",\"role-template-view-users\",\"role-template-view-platform\",\"role-template-edit-platform\",\"role-template-view-audit\",\"role-template-create-dns\",\"role-template-edit-dns\",\"role-template-delete-dns\",\"role-template-view-dns\"]",
+				"kubeclipper.io/aggregation-roles": "[\"role-template-access-clusters\",\"role-template-view-backuppoints\",\"role-template-edit-backuppoints\",\"role-template-view-registries\",\"role-template-edit-registries\",\"role-template-create-clusters\",\"role-template-edit-clusters\",\"role-template-delete-clusters\",\"role-template-view-clusters\",\"role-template-view-roles\",\"role-template-create-roles\",\"role-template-edit-roles\",\"role-template-delete-roles\",\"role-template-create-users\",\"role-template-edit-users\",\"role-template-delete-users\",\"role-template-view-users\",\"role-template-view-platform\",\"role-template-edit-platform\",\"role-template-view-audit\",\"role-template-create-dns\",\"role-template-edit-dns\",\"role-template-delete-dns\",\"role-template-view-dns\"]",
 				"kubeclipper.io/internal": "true"
 			}
 		},
@@ -782,7 +941,7 @@
 			"name": "platform-view",
 			"creationTimestamp": null,
 			"annotations": {
-				"kubeclipper.io/aggregation-roles": "[\"role-template-view-clusters\",\"role-template-view-roles\",\"role-template-view-users\",\"role-template-view-platform\",\"role-template-view-audit\",\"role-template-view-dns\"]",
+				"kubeclipper.io/aggregation-roles": "[\"role-template-view-backuppoints\",\"role-template-view-registries\",\"role-template-view-clusters\",\"role-template-view-roles\",\"role-template-view-users\",\"role-template-view-platform\",\"role-template-view-audit\",\"role-template-view-dns\"]",
 				"kubeclipper.io/internal": "true"
 			}
 		},
@@ -966,7 +1125,7 @@
 			"name": "cluster-manager",
 			"creationTimestamp": null,
 			"annotations": {
-				"kubeclipper.io/aggregation-roles": "[\"role-template-create-clusters\",\"role-template-edit-clusters\",\"role-template-delete-clusters\",\"role-template-view-clusters\"]",
+				"kubeclipper.io/aggregation-roles": "[\"role-template-access-clusters\",\"role-template-view-backuppoints\",\"role-template-edit-backuppoints\",\"role-template-view-registries\",\"role-template-edit-registries\",\"role-template-create-clusters\",\"role-template-edit-clusters\",\"role-template-delete-clusters\",\"role-template-view-clusters\"]",
 				"kubeclipper.io/internal": "true"
 			}
 		},
