@@ -38,6 +38,8 @@ type CoreV1Interface interface {
 	LeasesGetter
 	OperationsGetter
 	BackupsGetter
+	BackupPointsGetter
+	CronBackupsGetter
 	DomainsGetter
 }
 
@@ -78,6 +80,14 @@ func (c *CoreV1Client) Operations() OperationsInterface {
 
 func (c *CoreV1Client) Backups() BackupsInterface {
 	return newBackups(c)
+}
+
+func (c *CoreV1Client) BackupPoints() BackupPointsInterface {
+	return newBackupPoints(c)
+}
+
+func (c *CoreV1Client) CronBackups() CronBackupsInterface {
+	return newCronBackups(c)
 }
 
 func (c *CoreV1Client) Domains() DomainsInterface {

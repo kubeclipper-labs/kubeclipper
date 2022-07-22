@@ -50,6 +50,7 @@ type clusterOperator struct {
 	backupStorage      rest.StandardStorage
 	recoveryStorage    rest.StandardStorage
 	backupPointStorage rest.StandardStorage
+	cronBackupStorage  rest.StandardStorage
 	upgradeStorage     rest.StandardStorage
 	dnsStorage         rest.StandardStorage
 	templateStorage    rest.StandardStorage
@@ -57,7 +58,7 @@ type clusterOperator struct {
 
 func NewClusterOperator(clusterStorage rest.StandardStorage, nodeStorage rest.StandardStorage,
 	regionStorage rest.StandardStorage, backupStorage rest.StandardStorage, recoveryStorage, backupPointStorage,
-	dnsStorage rest.StandardStorage, templateStorage rest.StandardStorage) Operator {
+	cronBackupStorage rest.StandardStorage, dnsStorage rest.StandardStorage, templateStorage rest.StandardStorage) Operator {
 	return &clusterOperator{
 		clusterStorage:     clusterStorage,
 		nodeStorage:        nodeStorage,
@@ -65,6 +66,7 @@ func NewClusterOperator(clusterStorage rest.StandardStorage, nodeStorage rest.St
 		backupStorage:      backupStorage,
 		recoveryStorage:    recoveryStorage,
 		backupPointStorage: backupPointStorage,
+		cronBackupStorage:  cronBackupStorage,
 		dnsStorage:         dnsStorage,
 		templateStorage:    templateStorage,
 	}
@@ -293,10 +295,6 @@ func (c *clusterOperator) DeleteBackup(ctx context.Context, name string) (err er
 	return
 }
 
-func (c *clusterOperator) WatchBackupPoints(ctx context.Context, query *query.Query) (watch.Interface, error) {
-	return models.Watch(ctx, c.backupPointStorage, query)
-}
-
 func (c *clusterOperator) GetBackupPoint(ctx context.Context, name string, resourceVersion string) (*v1.BackupPoint, error) {
 	return c.GetBackupPointEx(ctx, name, resourceVersion)
 }
@@ -344,6 +342,58 @@ func (c *clusterOperator) UpdateBackupPoint(ctx context.Context, backupPoint *v1
 
 func (c *clusterOperator) DeleteBackupPoint(ctx context.Context, name string) error {
 	_, _, err := c.backupPointStorage.Delete(ctx, name, func(ctx context.Context, obj runtime.Object) error {
+		return nil
+	}, &metav1.DeleteOptions{})
+	return err
+}
+
+func (c *clusterOperator) GetCronBackup(ctx context.Context, name string, resourceVersion string) (*v1.CronBackup, error) {
+	return c.GetCronBackupEx(ctx, name, resourceVersion)
+}
+
+func (c *clusterOperator) GetCronBackupEx(ctx context.Context, name string, resourceVersion string) (*v1.CronBackup, error) {
+	cronBackup, err := models.Get(ctx, c.cronBackupStorage, name, resourceVersion)
+	if err != nil {
+		return nil, err
+	}
+	return cronBackup.(*v1.CronBackup), nil
+}
+
+func (c *clusterOperator) ListCronBackups(ctx context.Context, query *query.Query) (*v1.CronBackupList, error) {
+	list, err := models.List(ctx, c.cronBackupStorage, query)
+	if err != nil {
+		return nil, err
+	}
+	list.GetObjectKind().SetGroupVersionKind(v1.SchemeGroupVersion.WithKind("CronBackupList"))
+	return list.(*v1.CronBackupList), nil
+}
+
+func (c *clusterOperator) ListCronBackupEx(ctx context.Context, query *query.Query) (*models.PageableResponse, error) {
+	return models.ListExV2(ctx, c.cronBackupStorage, query, c.cronBackupFuzzyFilter, nil, nil)
+}
+
+func (c *clusterOperator) CreateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error) {
+	obj, err := c.cronBackupStorage.Create(ctx, cronBackup, nil, &metav1.CreateOptions{})
+	if err != nil {
+		return nil, err
+	}
+	return obj.(*v1.CronBackup), nil
+}
+
+func (c *clusterOperator) UpdateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error) {
+	obj, existed, err := c.cronBackupStorage.Update(ctx, cronBackup.Name, rest.DefaultUpdatedObjectInfo(cronBackup),
+		nil, nil, false, &metav1.UpdateOptions{})
+	if err != nil {
+		return nil, err
+	}
+	if !existed {
+		logger.Debug("cronbackup not exist, use create instead of update", zap.String("cronBackup", cronBackup.Name))
+	}
+	return obj.(*v1.CronBackup).DeepCopy(), nil
+}
+
+func (c *clusterOperator) DeleteCronBackup(ctx context.Context, name string) error {
+	_, _, err := c.cronBackupStorage.Delete(ctx, name, func(ctx context.Context, obj runtime.Object) error {
 		return nil
 	}, &metav1.DeleteOptions{})
 	return err
@@ -560,6 +610,26 @@ func (c *clusterOperator) backupPointFuzzyFilter(obj runtime.Object, q *query.Qu
 		}
 		if selected {
 			objs = append(objs, &backupPoints.Items[index])
+		}
+	}
+	return objs
+}
+
+func (c *clusterOperator) cronBackupFuzzyFilter(obj runtime.Object, q *query.Query) []runtime.Object {
+	cronBackups, ok := obj.(*v1.CronBackupList)
+	if !ok {
+		return nil
+	}
+	objs := make([]runtime.Object, 0, len(cronBackups.Items))
+	for index, backup := range cronBackups.Items {
+		selected := true
+		for k, v := range q.FuzzySearch {
+			if !models.ObjectMetaFilter(backup.ObjectMeta, k, v) {
+				selected = false
+			}
+		}
+		if selected {
+			objs = append(objs, &cronBackups.Items[index])
 		}
 	}
 	return objs

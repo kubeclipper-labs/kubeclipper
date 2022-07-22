@@ -36,6 +36,7 @@ type OperatorReader interface {
 	NodeReader
 	BackupReader
 	BackupPointReader
+	CronBackupReader
 	DNSReader
 }
 
@@ -45,6 +46,7 @@ type OperatorWriter interface {
 	NodeWriter
 	BackupWriter
 	BackupPointWriter
+	CronBackupWriter
 	DNSWriter
 }
 
@@ -63,6 +65,9 @@ type Operator interface {
 
 	BackupPointReader
 	BackupPointWriter
+
+	CronBackupReader
+	CronBackupWriter
 
 	DNSReader
 	DNSWriter
@@ -175,6 +180,23 @@ type BackupPointWriter interface {
 	CreateBackupPoint(ctx context.Context, backupPoint *v1.BackupPoint) (*v1.BackupPoint, error)
 	UpdateBackupPoint(ctx context.Context, backupPoint *v1.BackupPoint) (*v1.BackupPoint, error)
 	DeleteBackupPoint(ctx context.Context, name string) error
+}
+
+type CronBackupReaderEx interface {
+	ListCronBackupEx(ctx context.Context, query *query.Query) (*models.PageableResponse, error)
+	GetCronBackupEx(ctx context.Context, name string, resourceVersion string) (*v1.CronBackup, error)
+}
+
+type CronBackupReader interface {
+	ListCronBackups(ctx context.Context, query *query.Query) (*v1.CronBackupList, error)
+	GetCronBackup(ctx context.Context, name string, resourceVersion string) (*v1.CronBackup, error)
+	CronBackupReaderEx
+}
+
+type CronBackupWriter interface {
+	CreateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error)
+	UpdateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error)
+	DeleteCronBackup(ctx context.Context, name string) error
 }
 
 type DNSReader interface {

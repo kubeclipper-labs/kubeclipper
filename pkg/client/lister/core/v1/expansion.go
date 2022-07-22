@@ -33,6 +33,12 @@ type RegionListerExpansion interface {
 type BackupListerExpansion interface {
 }
 
+type BackupPointListerExpansion interface {
+}
+
+type CronBackupListerExpansion interface {
+}
+
 type RecoveryListerExpansion interface {
 }
 

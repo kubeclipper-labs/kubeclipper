@@ -128,6 +128,36 @@ func (mr *MockOperatorReaderMockRecorder) GetClusterEx(ctx, name, resourceVersio
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClusterEx", reflect.TypeOf((*MockOperatorReader)(nil).GetClusterEx), ctx, name, resourceVersion)
 }
 
+// GetCronBackup mocks base method.
+func (m *MockOperatorReader) GetCronBackup(ctx context.Context, name, resourceVersion string) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCronBackup", ctx, name, resourceVersion)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCronBackup indicates an expected call of GetCronBackup.
+func (mr *MockOperatorReaderMockRecorder) GetCronBackup(ctx, name, resourceVersion interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCronBackup", reflect.TypeOf((*MockOperatorReader)(nil).GetCronBackup), ctx, name, resourceVersion)
+}
+
+// GetCronBackupEx mocks base method.
+func (m *MockOperatorReader) GetCronBackupEx(ctx context.Context, name, resourceVersion string) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCronBackupEx", ctx, name, resourceVersion)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCronBackupEx indicates an expected call of GetCronBackupEx.
+func (mr *MockOperatorReaderMockRecorder) GetCronBackupEx(ctx, name, resourceVersion interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCronBackupEx", reflect.TypeOf((*MockOperatorReader)(nil).GetCronBackupEx), ctx, name, resourceVersion)
+}
+
 // GetDomain mocks base method.
 func (m *MockOperatorReader) GetDomain(ctx context.Context, name string) (*v1.Domain, error) {
 	m.ctrl.T.Helper()
@@ -291,6 +321,36 @@ func (m *MockOperatorReader) ListClusters(ctx context.Context, query *query.Quer
 func (mr *MockOperatorReaderMockRecorder) ListClusters(ctx, query interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListClusters", reflect.TypeOf((*MockOperatorReader)(nil).ListClusters), ctx, query)
+}
+
+// ListCronBackupEx mocks base method.
+func (m *MockOperatorReader) ListCronBackupEx(ctx context.Context, query *query.Query) (*models.PageableResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCronBackupEx", ctx, query)
+	ret0, _ := ret[0].(*models.PageableResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCronBackupEx indicates an expected call of ListCronBackupEx.
+func (mr *MockOperatorReaderMockRecorder) ListCronBackupEx(ctx, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCronBackupEx", reflect.TypeOf((*MockOperatorReader)(nil).ListCronBackupEx), ctx, query)
+}
+
+// ListCronBackups mocks base method.
+func (m *MockOperatorReader) ListCronBackups(ctx context.Context, query *query.Query) (*v1.CronBackupList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCronBackups", ctx, query)
+	ret0, _ := ret[0].(*v1.CronBackupList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCronBackups indicates an expected call of ListCronBackups.
+func (mr *MockOperatorReaderMockRecorder) ListCronBackups(ctx, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCronBackups", reflect.TypeOf((*MockOperatorReader)(nil).ListCronBackups), ctx, query)
 }
 
 // ListDomains mocks base method.
@@ -541,6 +601,21 @@ func (mr *MockOperatorWriterMockRecorder) CreateCluster(ctx, cluster interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCluster", reflect.TypeOf((*MockOperatorWriter)(nil).CreateCluster), ctx, cluster)
 }
 
+// CreateCronBackup mocks base method.
+func (m *MockOperatorWriter) CreateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCronBackup", ctx, cronBackup)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCronBackup indicates an expected call of CreateCronBackup.
+func (mr *MockOperatorWriterMockRecorder) CreateCronBackup(ctx, cronBackup interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCronBackup", reflect.TypeOf((*MockOperatorWriter)(nil).CreateCronBackup), ctx, cronBackup)
+}
+
 // CreateDomain mocks base method.
 func (m *MockOperatorWriter) CreateDomain(ctc context.Context, domain *v1.Domain) (*v1.Domain, error) {
 	m.ctrl.T.Helper()
@@ -628,6 +703,20 @@ func (mr *MockOperatorWriterMockRecorder) DeleteCluster(ctx, name interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCluster", reflect.TypeOf((*MockOperatorWriter)(nil).DeleteCluster), ctx, name)
 }
 
+// DeleteCronBackup mocks base method.
+func (m *MockOperatorWriter) DeleteCronBackup(ctx context.Context, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCronBackup", ctx, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteCronBackup indicates an expected call of DeleteCronBackup.
+func (mr *MockOperatorWriterMockRecorder) DeleteCronBackup(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCronBackup", reflect.TypeOf((*MockOperatorWriter)(nil).DeleteCronBackup), ctx, name)
+}
+
 // DeleteDomain mocks base method.
 func (m *MockOperatorWriter) DeleteDomain(ctx context.Context, name string) error {
 	m.ctrl.T.Helper()
@@ -713,6 +802,21 @@ func (m *MockOperatorWriter) UpdateCluster(ctx context.Context, cluster *v1.Clus
 func (mr *MockOperatorWriterMockRecorder) UpdateCluster(ctx, cluster interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCluster", reflect.TypeOf((*MockOperatorWriter)(nil).UpdateCluster), ctx, cluster)
+}
+
+// UpdateCronBackup mocks base method.
+func (m *MockOperatorWriter) UpdateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCronBackup", ctx, cronBackup)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateCronBackup indicates an expected call of UpdateCronBackup.
+func (mr *MockOperatorWriterMockRecorder) UpdateCronBackup(ctx, cronBackup interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCronBackup", reflect.TypeOf((*MockOperatorWriter)(nil).UpdateCronBackup), ctx, cronBackup)
 }
 
 // UpdateDomain mocks base method.
@@ -811,6 +915,21 @@ func (m *MockOperator) CreateCluster(ctx context.Context, cluster *v1.Cluster) (
 func (mr *MockOperatorMockRecorder) CreateCluster(ctx, cluster interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCluster", reflect.TypeOf((*MockOperator)(nil).CreateCluster), ctx, cluster)
+}
+
+// CreateCronBackup mocks base method.
+func (m *MockOperator) CreateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCronBackup", ctx, cronBackup)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCronBackup indicates an expected call of CreateCronBackup.
+func (mr *MockOperatorMockRecorder) CreateCronBackup(ctx, cronBackup interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCronBackup", reflect.TypeOf((*MockOperator)(nil).CreateCronBackup), ctx, cronBackup)
 }
 
 // CreateDomain mocks base method.
@@ -913,6 +1032,20 @@ func (m *MockOperator) DeleteCluster(ctx context.Context, name string) error {
 func (mr *MockOperatorMockRecorder) DeleteCluster(ctx, name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCluster", reflect.TypeOf((*MockOperator)(nil).DeleteCluster), ctx, name)
+}
+
+// DeleteCronBackup mocks base method.
+func (m *MockOperator) DeleteCronBackup(ctx context.Context, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCronBackup", ctx, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteCronBackup indicates an expected call of DeleteCronBackup.
+func (mr *MockOperatorMockRecorder) DeleteCronBackup(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCronBackup", reflect.TypeOf((*MockOperator)(nil).DeleteCronBackup), ctx, name)
 }
 
 // DeleteDomain mocks base method.
@@ -1073,6 +1206,36 @@ func (m *MockOperator) GetClusterEx(ctx context.Context, name, resourceVersion s
 func (mr *MockOperatorMockRecorder) GetClusterEx(ctx, name, resourceVersion interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClusterEx", reflect.TypeOf((*MockOperator)(nil).GetClusterEx), ctx, name, resourceVersion)
+}
+
+// GetCronBackup mocks base method.
+func (m *MockOperator) GetCronBackup(ctx context.Context, name, resourceVersion string) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCronBackup", ctx, name, resourceVersion)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCronBackup indicates an expected call of GetCronBackup.
+func (mr *MockOperatorMockRecorder) GetCronBackup(ctx, name, resourceVersion interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCronBackup", reflect.TypeOf((*MockOperator)(nil).GetCronBackup), ctx, name, resourceVersion)
+}
+
+// GetCronBackupEx mocks base method.
+func (m *MockOperator) GetCronBackupEx(ctx context.Context, name, resourceVersion string) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCronBackupEx", ctx, name, resourceVersion)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCronBackupEx indicates an expected call of GetCronBackupEx.
+func (mr *MockOperatorMockRecorder) GetCronBackupEx(ctx, name, resourceVersion interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCronBackupEx", reflect.TypeOf((*MockOperator)(nil).GetCronBackupEx), ctx, name, resourceVersion)
 }
 
 // GetDomain mocks base method.
@@ -1270,6 +1433,36 @@ func (mr *MockOperatorMockRecorder) ListClusters(ctx, query interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListClusters", reflect.TypeOf((*MockOperator)(nil).ListClusters), ctx, query)
 }
 
+// ListCronBackupEx mocks base method.
+func (m *MockOperator) ListCronBackupEx(ctx context.Context, query *query.Query) (*models.PageableResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCronBackupEx", ctx, query)
+	ret0, _ := ret[0].(*models.PageableResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCronBackupEx indicates an expected call of ListCronBackupEx.
+func (mr *MockOperatorMockRecorder) ListCronBackupEx(ctx, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCronBackupEx", reflect.TypeOf((*MockOperator)(nil).ListCronBackupEx), ctx, query)
+}
+
+// ListCronBackups mocks base method.
+func (m *MockOperator) ListCronBackups(ctx context.Context, query *query.Query) (*v1.CronBackupList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCronBackups", ctx, query)
+	ret0, _ := ret[0].(*v1.CronBackupList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCronBackups indicates an expected call of ListCronBackups.
+func (mr *MockOperatorMockRecorder) ListCronBackups(ctx, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCronBackups", reflect.TypeOf((*MockOperator)(nil).ListCronBackups), ctx, query)
+}
+
 // ListDomains mocks base method.
 func (m *MockOperator) ListDomains(ctx context.Context, query *query.Query) (*v1.DomainList, error) {
 	m.ctrl.T.Helper()
@@ -1448,6 +1641,21 @@ func (m *MockOperator) UpdateCluster(ctx context.Context, cluster *v1.Cluster) (
 func (mr *MockOperatorMockRecorder) UpdateCluster(ctx, cluster interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCluster", reflect.TypeOf((*MockOperator)(nil).UpdateCluster), ctx, cluster)
+}
+
+// UpdateCronBackup mocks base method.
+func (m *MockOperator) UpdateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCronBackup", ctx, cronBackup)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateCronBackup indicates an expected call of UpdateCronBackup.
+func (mr *MockOperatorMockRecorder) UpdateCronBackup(ctx, cronBackup interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCronBackup", reflect.TypeOf((*MockOperator)(nil).UpdateCronBackup), ctx, cronBackup)
 }
 
 // UpdateDomain mocks base method.
@@ -2861,6 +3069,209 @@ func (m *MockBackupPointWriter) UpdateBackupPoint(ctx context.Context, backupPoi
 func (mr *MockBackupPointWriterMockRecorder) UpdateBackupPoint(ctx, backupPoint interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBackupPoint", reflect.TypeOf((*MockBackupPointWriter)(nil).UpdateBackupPoint), ctx, backupPoint)
+}
+
+// MockCronBackupReaderEx is a mock of CronBackupReaderEx interface.
+type MockCronBackupReaderEx struct {
+	ctrl     *gomock.Controller
+	recorder *MockCronBackupReaderExMockRecorder
+}
+
+// MockCronBackupReaderExMockRecorder is the mock recorder for MockCronBackupReaderEx.
+type MockCronBackupReaderExMockRecorder struct {
+	mock *MockCronBackupReaderEx
+}
+
+// NewMockCronBackupReaderEx creates a new mock instance.
+func NewMockCronBackupReaderEx(ctrl *gomock.Controller) *MockCronBackupReaderEx {
+	mock := &MockCronBackupReaderEx{ctrl: ctrl}
+	mock.recorder = &MockCronBackupReaderExMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCronBackupReaderEx) EXPECT() *MockCronBackupReaderExMockRecorder {
+	return m.recorder
+}
+
+// GetCronBackupEx mocks base method.
+func (m *MockCronBackupReaderEx) GetCronBackupEx(ctx context.Context, name, resourceVersion string) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCronBackupEx", ctx, name, resourceVersion)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCronBackupEx indicates an expected call of GetCronBackupEx.
+func (mr *MockCronBackupReaderExMockRecorder) GetCronBackupEx(ctx, name, resourceVersion interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCronBackupEx", reflect.TypeOf((*MockCronBackupReaderEx)(nil).GetCronBackupEx), ctx, name, resourceVersion)
+}
+
+// ListCronBackupEx mocks base method.
+func (m *MockCronBackupReaderEx) ListCronBackupEx(ctx context.Context, query *query.Query) (*models.PageableResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCronBackupEx", ctx, query)
+	ret0, _ := ret[0].(*models.PageableResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCronBackupEx indicates an expected call of ListCronBackupEx.
+func (mr *MockCronBackupReaderExMockRecorder) ListCronBackupEx(ctx, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCronBackupEx", reflect.TypeOf((*MockCronBackupReaderEx)(nil).ListCronBackupEx), ctx, query)
+}
+
+// MockCronBackupReader is a mock of CronBackupReader interface.
+type MockCronBackupReader struct {
+	ctrl     *gomock.Controller
+	recorder *MockCronBackupReaderMockRecorder
+}
+
+// MockCronBackupReaderMockRecorder is the mock recorder for MockCronBackupReader.
+type MockCronBackupReaderMockRecorder struct {
+	mock *MockCronBackupReader
+}
+
+// NewMockCronBackupReader creates a new mock instance.
+func NewMockCronBackupReader(ctrl *gomock.Controller) *MockCronBackupReader {
+	mock := &MockCronBackupReader{ctrl: ctrl}
+	mock.recorder = &MockCronBackupReaderMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCronBackupReader) EXPECT() *MockCronBackupReaderMockRecorder {
+	return m.recorder
+}
+
+// GetCronBackup mocks base method.
+func (m *MockCronBackupReader) GetCronBackup(ctx context.Context, name, resourceVersion string) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCronBackup", ctx, name, resourceVersion)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCronBackup indicates an expected call of GetCronBackup.
+func (mr *MockCronBackupReaderMockRecorder) GetCronBackup(ctx, name, resourceVersion interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCronBackup", reflect.TypeOf((*MockCronBackupReader)(nil).GetCronBackup), ctx, name, resourceVersion)
+}
+
+// GetCronBackupEx mocks base method.
+func (m *MockCronBackupReader) GetCronBackupEx(ctx context.Context, name, resourceVersion string) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCronBackupEx", ctx, name, resourceVersion)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCronBackupEx indicates an expected call of GetCronBackupEx.
+func (mr *MockCronBackupReaderMockRecorder) GetCronBackupEx(ctx, name, resourceVersion interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCronBackupEx", reflect.TypeOf((*MockCronBackupReader)(nil).GetCronBackupEx), ctx, name, resourceVersion)
+}
+
+// ListCronBackupEx mocks base method.
+func (m *MockCronBackupReader) ListCronBackupEx(ctx context.Context, query *query.Query) (*models.PageableResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCronBackupEx", ctx, query)
+	ret0, _ := ret[0].(*models.PageableResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCronBackupEx indicates an expected call of ListCronBackupEx.
+func (mr *MockCronBackupReaderMockRecorder) ListCronBackupEx(ctx, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCronBackupEx", reflect.TypeOf((*MockCronBackupReader)(nil).ListCronBackupEx), ctx, query)
+}
+
+// ListCronBackups mocks base method.
+func (m *MockCronBackupReader) ListCronBackups(ctx context.Context, query *query.Query) (*v1.CronBackupList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCronBackups", ctx, query)
+	ret0, _ := ret[0].(*v1.CronBackupList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCronBackups indicates an expected call of ListCronBackups.
+func (mr *MockCronBackupReaderMockRecorder) ListCronBackups(ctx, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCronBackups", reflect.TypeOf((*MockCronBackupReader)(nil).ListCronBackups), ctx, query)
+}
+
+// MockCronBackupWriter is a mock of CronBackupWriter interface.
+type MockCronBackupWriter struct {
+	ctrl     *gomock.Controller
+	recorder *MockCronBackupWriterMockRecorder
+}
+
+// MockCronBackupWriterMockRecorder is the mock recorder for MockCronBackupWriter.
+type MockCronBackupWriterMockRecorder struct {
+	mock *MockCronBackupWriter
+}
+
+// NewMockCronBackupWriter creates a new mock instance.
+func NewMockCronBackupWriter(ctrl *gomock.Controller) *MockCronBackupWriter {
+	mock := &MockCronBackupWriter{ctrl: ctrl}
+	mock.recorder = &MockCronBackupWriterMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCronBackupWriter) EXPECT() *MockCronBackupWriterMockRecorder {
+	return m.recorder
+}
+
+// CreateCronBackup mocks base method.
+func (m *MockCronBackupWriter) CreateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCronBackup", ctx, cronBackup)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCronBackup indicates an expected call of CreateCronBackup.
+func (mr *MockCronBackupWriterMockRecorder) CreateCronBackup(ctx, cronBackup interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCronBackup", reflect.TypeOf((*MockCronBackupWriter)(nil).CreateCronBackup), ctx, cronBackup)
+}
+
+// DeleteCronBackup mocks base method.
+func (m *MockCronBackupWriter) DeleteCronBackup(ctx context.Context, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCronBackup", ctx, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteCronBackup indicates an expected call of DeleteCronBackup.
+func (mr *MockCronBackupWriterMockRecorder) DeleteCronBackup(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCronBackup", reflect.TypeOf((*MockCronBackupWriter)(nil).DeleteCronBackup), ctx, name)
+}
+
+// UpdateCronBackup mocks base method.
+func (m *MockCronBackupWriter) UpdateCronBackup(ctx context.Context, cronBackup *v1.CronBackup) (*v1.CronBackup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCronBackup", ctx, cronBackup)
+	ret0, _ := ret[0].(*v1.CronBackup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateCronBackup indicates an expected call of UpdateCronBackup.
+func (mr *MockCronBackupWriterMockRecorder) UpdateCronBackup(ctx, cronBackup interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCronBackup", reflect.TypeOf((*MockCronBackupWriter)(nil).UpdateCronBackup), ctx, cronBackup)
 }
 
 // MockDNSReader is a mock of DNSReader interface.

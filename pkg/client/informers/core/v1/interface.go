@@ -30,6 +30,8 @@ type Interface interface {
 	Operations() OperationInformer
 	Regions() RegionInformer
 	Backups() BackupInformer
+	BackupPoints() BackupPointInformer
+	CronBackups() CronBackupInformer
 	Leases() LeaseInformer
 	Domains() DomainInformer
 }
@@ -75,6 +77,20 @@ func (v *version) Regions() RegionInformer {
 
 func (v *version) Backups() BackupInformer {
 	return &backupInformer{
+		factory:          v.factory,
+		tweakListOptions: v.tweakListOptions,
+	}
+}
+
+func (v *version) BackupPoints() BackupPointInformer {
+	return &backupPointInformer{
+		factory:          v.factory,
+		tweakListOptions: v.tweakListOptions,
+	}
+}
+
+func (v *version) CronBackups() CronBackupInformer {
+	return &cronBackupInformer{
 		factory:          v.factory,
 		tweakListOptions: v.tweakListOptions,
 	}

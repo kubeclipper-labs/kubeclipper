@@ -24,11 +24,12 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/kubeclipper/kubeclipper/pkg/query"
+
 	"github.com/google/uuid"
 
 	"github.com/kubeclipper/kubeclipper/pkg/component"
 	"github.com/kubeclipper/kubeclipper/pkg/component/utils"
-	"github.com/kubeclipper/kubeclipper/pkg/query"
 	"github.com/kubeclipper/kubeclipper/pkg/scheme/common"
 	v1 "github.com/kubeclipper/kubeclipper/pkg/scheme/core/v1"
 	"github.com/kubeclipper/kubeclipper/pkg/scheme/core/v1/cri"
